@@ -1,0 +1,487 @@
+{
+  "cleopatra": [
+    "doc1.txt",
+    "doc2.txt",
+    "doc6.txt",
+    "doc9.txt"
+  ],
+  "met": [
+    "doc1.txt"
+  ],
+  "julius": [
+    "doc1.txt"
+  ],
+  "caesar": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc3.txt",
+    "doc5.txt",
+    "doc7.txt"
+  ],
+  "in": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc2.txt",
+    "doc3.txt",
+    "doc7.txt",
+    "doc8.txt"
+  ],
+  "alexandria": [
+    "doc1.txt",
+    "doc9.txt"
+  ],
+  "supported": [
+    "doc1.txt",
+    "doc5.txt"
+  ],
+  "the": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc2.txt",
+    "doc3.txt",
+    "doc4.txt",
+    "doc5.txt",
+    "doc6.txt",
+    "doc7.txt",
+    "doc8.txt"
+  ],
+  "struggle": [
+    "doc1.txt"
+  ],
+  "for": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc9.txt"
+  ],
+  "egyptian": [
+    "doc1.txt"
+  ],
+  "throne": [
+    "doc1.txt"
+  ],
+  "roman": [
+    "doc1.txt",
+    "doc2.txt",
+    "doc4.txt",
+    "doc8.txt"
+  ],
+  "civil": [
+    "doc1.txt",
+    "doc5.txt"
+  ],
+  "war": [
+    "doc1.txt",
+    "doc5.txt"
+  ],
+  "influenced": [
+    "doc1.txt"
+  ],
+  "egypt": [
+    "doc1.txt",
+    "doc3.txt",
+    "doc9.txt"
+  ],
+  "and": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc2.txt",
+    "doc4.txt",
+    "doc5.txt",
+    "doc6.txt",
+    "doc7.txt",
+    "doc8.txt",
+    "doc9.txt"
+  ],
+  "politics": [
+    "doc1.txt",
+    "doc4.txt"
+  ],
+  "of": [
+    "doc1.txt",
+    "doc10.txt",
+    "doc3.txt",
+    "doc5.txt",
+    "doc6.txt",
+    "doc7.txt",
+    "doc9.txt"
+  ],
+  "ptolemaic": [
+    "doc1.txt"
+  ],
+  "dynasty": [
+    "doc1.txt"
+  ],
+  "battle": [
+    "doc10.txt",
+    "doc6.txt"
+  ],
+  "pharsalus": [
+    "doc10.txt",
+    "doc3.txt"
+  ],
+  "was": [
+    "doc10.txt",
+    "doc3.txt",
+    "doc4.txt",
+    "doc5.txt",
+    "doc9.txt"
+  ],
+  "decisive": [
+    "doc10.txt"
+  ],
+  "conflict": [
+    "doc10.txt"
+  ],
+  "between": [
+    "doc10.txt"
+  ],
+  "pompey": [
+    "doc10.txt",
+    "doc3.txt",
+    "doc5.txt"
+  ],
+  "s": [
+    "doc10.txt",
+    "doc7.txt"
+  ],
+  "victory": [
+    "doc10.txt"
+  ],
+  "forced": [
+    "doc10.txt"
+  ],
+  "to": [
+    "doc10.txt",
+    "doc3.txt"
+  ],
+  "flee": [
+    "doc10.txt"
+  ],
+  "later": [
+    "doc10.txt",
+    "doc2.txt",
+    "doc6.txt"
+  ],
+  "antony": [
+    "doc10.txt",
+    "doc2.txt",
+    "doc6.txt",
+    "doc7.txt"
+  ],
+  "octavian": [
+    "doc10.txt",
+    "doc2.txt",
+    "doc6.txt"
+  ],
+  "fought": [
+    "doc10.txt"
+  ],
+  "control": [
+    "doc10.txt"
+  ],
+  "rome": [
+    "doc10.txt",
+    "doc3.txt",
+    "doc5.txt",
+    "doc6.txt",
+    "doc9.txt"
+  ],
+  "after": [
+    "doc10.txt",
+    "doc3.txt",
+    "doc6.txt",
+    "doc7.txt"
+  ],
+  "assassination": [
+    "doc10.txt",
+    "doc5.txt",
+    "doc7.txt"
+  ],
+  "mark": [
+    "doc2.txt"
+  ],
+  "formed": [
+    "doc2.txt"
+  ],
+  "an": [
+    "doc2.txt",
+    "doc8.txt"
+  ],
+  "alliance": [
+    "doc2.txt"
+  ],
+  "with": [
+    "doc2.txt",
+    "doc9.txt"
+  ],
+  "faced": [
+    "doc2.txt"
+  ],
+  "cicero": [
+    "doc2.txt",
+    "doc4.txt",
+    "doc8.txt"
+  ],
+  "criticized": [
+    "doc2.txt"
+  ],
+  "senate": [
+    "doc2.txt",
+    "doc8.txt"
+  ],
+  "wrote": [
+    "doc2.txt",
+    "doc4.txt"
+  ],
+  "speeches": [
+    "doc2.txt"
+  ],
+  "against": [
+    "doc2.txt"
+  ],
+  "him": [
+    "doc2.txt"
+  ],
+  "great": [
+    "doc3.txt"
+  ],
+  "a": [
+    "doc3.txt",
+    "doc4.txt",
+    "doc5.txt",
+    "doc7.txt",
+    "doc9.txt"
+  ],
+  "rival": [
+    "doc3.txt"
+  ],
+  "defeat": [
+    "doc3.txt"
+  ],
+  "at": [
+    "doc3.txt",
+    "doc6.txt"
+  ],
+  "fled": [
+    "doc3.txt"
+  ],
+  "death": [
+    "doc3.txt",
+    "doc7.txt"
+  ],
+  "changed": [
+    "doc3.txt"
+  ],
+  "balance": [
+    "doc3.txt"
+  ],
+  "power": [
+    "doc3.txt"
+  ],
+  "famous": [
+    "doc4.txt"
+  ],
+  "orator": [
+    "doc4.txt"
+  ],
+  "philosopher": [
+    "doc4.txt"
+  ],
+  "defended": [
+    "doc4.txt",
+    "doc8.txt"
+  ],
+  "republic": [
+    "doc4.txt",
+    "doc7.txt",
+    "doc8.txt"
+  ],
+  "opposed": [
+    "doc4.txt"
+  ],
+  "dictatorship": [
+    "doc4.txt"
+  ],
+  "he": [
+    "doc4.txt"
+  ],
+  "about": [
+    "doc4.txt"
+  ],
+  "ethics": [
+    "doc4.txt"
+  ],
+  "rhetoric": [
+    "doc4.txt"
+  ],
+  "crossed": [
+    "doc5.txt"
+  ],
+  "rubicon": [
+    "doc5.txt"
+  ],
+  "began": [
+    "doc5.txt"
+  ],
+  "defeated": [
+    "doc5.txt",
+    "doc6.txt"
+  ],
+  "became": [
+    "doc5.txt",
+    "doc6.txt"
+  ],
+  "dictator": [
+    "doc5.txt"
+  ],
+  "by": [
+    "doc5.txt"
+  ],
+  "senators": [
+    "doc5.txt",
+    "doc8.txt"
+  ],
+  "who": [
+    "doc5.txt"
+  ],
+  "feared": [
+    "doc5.txt"
+  ],
+  "monarchy": [
+    "doc5.txt"
+  ],
+  "known": [
+    "doc6.txt"
+  ],
+  "as": [
+    "doc6.txt"
+  ],
+  "augustus": [
+    "doc6.txt"
+  ],
+  "actium": [
+    "doc6.txt"
+  ],
+  "first": [
+    "doc6.txt"
+  ],
+  "emperor": [
+    "doc6.txt"
+  ],
+  "brutus": [
+    "doc7.txt"
+  ],
+  "cassius": [
+    "doc7.txt"
+  ],
+  "participated": [
+    "doc7.txt"
+  ],
+  "conspirators": [
+    "doc7.txt"
+  ],
+  "believed": [
+    "doc7.txt"
+  ],
+  "they": [
+    "doc7.txt"
+  ],
+  "were": [
+    "doc7.txt",
+    "doc9.txt"
+  ],
+  "saving": [
+    "doc7.txt"
+  ],
+  "delivered": [
+    "doc7.txt"
+  ],
+  "speech": [
+    "doc7.txt"
+  ],
+  "turned": [
+    "doc7.txt"
+  ],
+  "public": [
+    "doc7.txt"
+  ],
+  "opinion": [
+    "doc7.txt"
+  ],
+  "played": [
+    "doc8.txt"
+  ],
+  "important": [
+    "doc8.txt",
+    "doc9.txt"
+  ],
+  "role": [
+    "doc8.txt"
+  ],
+  "debated": [
+    "doc8.txt"
+  ],
+  "laws": [
+    "doc8.txt"
+  ],
+  "military": [
+    "doc8.txt"
+  ],
+  "campaigns": [
+    "doc8.txt"
+  ],
+  "foreign": [
+    "doc8.txt"
+  ],
+  "policy": [
+    "doc8.txt"
+  ],
+  "often": [
+    "doc8.txt"
+  ],
+  "spoke": [
+    "doc8.txt"
+  ],
+  "traditional": [
+    "doc8.txt"
+  ],
+  "values": [
+    "doc8.txt"
+  ],
+  "rich": [
+    "doc9.txt"
+  ],
+  "kingdom": [
+    "doc9.txt"
+  ],
+  "grain": [
+    "doc9.txt"
+  ],
+  "supplies": [
+    "doc9.txt"
+  ],
+  "that": [
+    "doc9.txt"
+  ],
+  "ruled": [
+    "doc9.txt"
+  ],
+  "used": [
+    "doc9.txt"
+  ],
+  "diplomacy": [
+    "doc9.txt"
+  ],
+  "center": [
+    "doc9.txt"
+  ],
+  "culture": [
+    "doc9.txt"
+  ],
+  "learning": [
+    "doc9.txt"
+  ],
+  "trade": [
+    "doc9.txt"
+  ]
+}
