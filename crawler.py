@@ -1,73 +1,90 @@
 import os
-import time
-import requests
-
-URLS_FILE = "urls.txt"
-OUTPUT_DIR = "pages"
-INDEX_FILE = "index.txt"
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; SimpleCrawler/1.0)"
-}
-
-TIMEOUT = 15
-DELAY_SECONDS = 1
+import re
+from collections import defaultdict
+import nltk
+from nltk.corpus import stopwords
+import spacy
 
 
-def read_urls(filename):
-    with open(filename, "r", encoding="utf-8") as f:
-        urls = [line.strip() for line in f if line.strip()]
-    return urls
+def read_all_txt_files(folder_path: str) -> str:
+    full_text = ""
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".txt"):
+            filepath = os.path.join(folder_path, filename)
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                full_text += f.read() + "\n"
+    return full_text
 
 
-def download_page(url):
-    response = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-    return response.status_code, response.text
+def is_noise(token: str) -> bool:
+    # remove tokens containing digits or latin letters
+    if re.search(r"[0-9a-zA-Z]", token):
+        return True
+    return False
 
 
 def main():
-    urls = read_urls(URLS_FILE)
+    input_folder = "input_texts"
+    output_folder = "output"
 
-    if len(urls) < 100:
-        print("ERROR: urls.txt must contain at least 100 URLs")
-        return
+    os.makedirs(output_folder, exist_ok=True)
 
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    nltk.download("stopwords")
+    russian_stopwords = set(stopwords.words("russian"))
 
-    index_lines = []
-    success_count = 0
+    # load Russian model
+    nlp = spacy.load("ru_core_news_sm")
 
-    for i, url in enumerate(urls, start=1):
-        print(f"[{i}] Downloading: {url}")
+    text = read_all_txt_files(input_folder)
 
-        try:
-            status_code, html = download_page(url)
+    doc = nlp(text)
 
-            if status_code != 200:
-                print(f"   Failed (status code {status_code})")
-                continue
+    tokens_set = set()
 
-            file_path = os.path.join(OUTPUT_DIR, f"{i}.txt")
+    for token in doc:
+        if token.is_punct or token.is_space:
+            continue
 
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(html)
+        word = token.text.lower().strip()
 
-            index_lines.append(f"{i} {url}")
-            success_count += 1
+        # keep only Russian letters
+        word = re.sub(r"[^а-яё]", "", word)
 
-            print("   Saved successfully.")
+        if not word:
+            continue
 
-        except Exception as e:
-            print(f"   Error: {e}")
+        if len(word) < 2:
+            continue
 
-        time.sleep(DELAY_SECONDS)
+        if word in russian_stopwords:
+            continue
 
-    with open(INDEX_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(index_lines))
+        if is_noise(word):
+            continue
 
-    print("\nDONE!")
-    print(f"Downloaded pages: {success_count}")
-    print(f"Index file saved as: {INDEX_FILE}")
+        tokens_set.add(word)
+
+    tokens_list = sorted(tokens_set)
+
+    # save tokens.txt
+    with open(os.path.join(output_folder, "tokens.txt"), "w", encoding="utf-8") as f:
+        for t in tokens_list:
+            f.write(t + "\n")
+
+    # group by lemma
+    lemma_dict = defaultdict(list)
+
+    for t in tokens_list:
+        lemma = nlp(t)[0].lemma_.lower()
+        lemma_dict[lemma].append(t)
+
+    # save lemmas.txt
+    with open(os.path.join(output_folder, "lemmas.txt"), "w", encoding="utf-8") as f:
+        for lemma in sorted(lemma_dict.keys()):
+            words = " ".join(sorted(lemma_dict[lemma]))
+            f.write(f"{lemma} {words}\n")
+
+    print("Done! Output saved in output/ folder.")
 
 
 if __name__ == "__main__":
