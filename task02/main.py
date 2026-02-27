@@ -1,38 +1,48 @@
 import os
 import re
 from collections import defaultdict
-
 import nltk
 from nltk.corpus import stopwords
 from pymystem3 import Mystem
 
 
 # -----------------------------
-# TOKEN CLEANING
+# REMOVE HTML TAGS
+# -----------------------------
+def remove_html_tags(text: str) -> str:
+    clean = re.sub(r"<[^>]+>", " ", text)
+    return clean
+
+
+# -----------------------------
+# CLEAN TOKEN
 # -----------------------------
 RUS_LETTERS_RE = re.compile(r"[^а-яё]")
 
 def clean_token(token: str) -> str:
     token = token.lower().strip()
-    token = RUS_LETTERS_RE.sub("", token)  # keep only Russian letters
+    token = RUS_LETTERS_RE.sub("", token)
     return token
 
 
 # -----------------------------
 # PROCESS ONE FILE
 # -----------------------------
-def process_file(filepath: str, output_folder: str, russian_stopwords: set[str], mystem: Mystem) -> None:
+def process_file(filepath: str, output_folder: str, russian_stopwords: set, mystem: Mystem):
+
     with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
         text = f.read()
 
-    # Extract only Russian-letter sequences (prevents digits/markup fragments)
+    # 1️⃣ Remove HTML
+    text = remove_html_tags(text)
+
+    # 2️⃣ Extract Russian words only
     raw_tokens = re.findall(r"[А-Яа-яЁё]+", text)
 
-    # Unique tokens per page (no duplicates)
-    tokens_set: set[str] = set()
+    tokens_set = set()
 
-    for tok in raw_tokens:
-        cleaned = clean_token(tok)
+    for token in raw_tokens:
+        cleaned = clean_token(token)
 
         if not cleaned:
             continue
@@ -48,26 +58,27 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set[str],
     filename = os.path.splitext(os.path.basename(filepath))[0]
 
     # -----------------------------
-    # SAVE TOKENS FILE (per page)
+    # SAVE TOKENS
     # -----------------------------
-    tokens_output_path = os.path.join(output_folder, f"{filename}_tokens.txt")
-    with open(tokens_output_path, "w", encoding="utf-8") as f:
+    tokens_path = os.path.join(output_folder, f"{filename}_tokens.txt")
+
+    with open(tokens_path, "w", encoding="utf-8") as f:
         for token in tokens_sorted:
             f.write(token + "\n")
 
     # -----------------------------
-    # SAVE LEMMAS FILE (per page)
-    # lemma line format: <lemma> <token1> <token2> ... <tokenN>
+    # GROUP BY LEMMAS
     # -----------------------------
-    lemma_dict: defaultdict[str, set[str]] = defaultdict(set)
+    lemma_dict = defaultdict(set)
 
     for token in tokens_sorted:
         lemma = mystem.lemmatize(token)[0].strip()
         if lemma:
             lemma_dict[lemma].add(token)
 
-    lemmas_output_path = os.path.join(output_folder, f"{filename}_lemmas.txt")
-    with open(lemmas_output_path, "w", encoding="utf-8") as f:
+    lemmas_path = os.path.join(output_folder, f"{filename}_lemmas.txt")
+
+    with open(lemmas_path, "w", encoding="utf-8") as f:
         for lemma in sorted(lemma_dict.keys()):
             words = " ".join(sorted(lemma_dict[lemma]))
             f.write(f"{lemma} {words}\n")
@@ -77,8 +88,8 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set[str],
 # MAIN
 # -----------------------------
 def main():
-    # ✅ Your folder with 1.txt ... 117.txt
-    input_folder = "/Users/amyargotti/PycharmProjects/OIP1-crawler-code-files/task02/input_texts/117_pages"
+
+    input_folder = "D:\OIP\OIP1-crawler-code-files\pages"      # folder with 117 txt files
     output_folder = "output"
 
     os.makedirs(output_folder, exist_ok=True)
@@ -88,32 +99,24 @@ def main():
 
     mystem = Mystem()
 
-    # Sort files numerically if names are 1.txt, 2.txt, ...
-    def sort_key(fn: str):
-        base = os.path.splitext(fn)[0]
-        return int(base) if base.isdigit() else base
+    files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
 
-    files = sorted(
-        [f for f in os.listdir(input_folder) if f.endswith(".txt")],
-        key=sort_key
-    )
-
-    processed_files = 0
+    processed = 0
 
     for filename in files:
         filepath = os.path.join(input_folder, filename)
         print(f"Processing {filename}...")
         process_file(filepath, output_folder, russian_stopwords, mystem)
-        processed_files += 1
+        processed += 1
 
     print("\n✅ DONE")
-    print(f"Processed files: {processed_files}")
-    print(f"Generated {processed_files} token files.")
-    print(f"Generated {processed_files} lemma files.")
+    print(f"Processed files: {processed}")
+    print(f"Generated {processed} token files")
+    print(f"Generated {processed} lemma files")
 
-    if processed_files != 117:
-        print("⚠ WARNING: The number of processed files is NOT 117!")
-        print("Check your input folder contents (missing/extra .txt files).")
+    if processed != 117:
+        print("⚠ WARNING: Number of processed files is not 117!")
+        print("Check your input folder.")
 
 
 if __name__ == "__main__":
