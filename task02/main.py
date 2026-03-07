@@ -10,8 +10,7 @@ from pymystem3 import Mystem
 # REMOVE HTML TAGS
 # -----------------------------
 def remove_html_tags(text: str) -> str:
-    clean = re.sub(r"<[^>]+>", " ", text)
-    return clean
+    return re.sub(r"<[^>]+>", " ", text)
 
 
 # -----------------------------
@@ -20,7 +19,7 @@ def remove_html_tags(text: str) -> str:
 RUS_LETTERS_RE = re.compile(r"[^а-яё]")
 
 def clean_token(token: str) -> str:
-    token = token.lower().strip()
+    token = token.lower()
     token = RUS_LETTERS_RE.sub("", token)
     return token
 
@@ -33,15 +32,16 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
     with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
         text = f.read()
 
-    # 1️⃣ Remove HTML
+    # 1️⃣ remove html
     text = remove_html_tags(text)
 
-    # 2️⃣ Extract Russian words only
+    # 2️⃣ extract russian tokens
     raw_tokens = re.findall(r"[А-Яа-яЁё]+", text)
 
-    tokens_set = set()
+    tokens = []
 
     for token in raw_tokens:
+
         cleaned = clean_token(token)
 
         if not cleaned:
@@ -51,9 +51,10 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
         if cleaned in russian_stopwords:
             continue
 
-        tokens_set.add(cleaned)
+        tokens.append(cleaned)
 
-    tokens_sorted = sorted(tokens_set)
+    # sort tokens alphabetically
+    tokens_sorted = sorted(tokens)
 
     filename = os.path.splitext(os.path.basename(filepath))[0]
 
@@ -67,15 +68,32 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
             f.write(token + "\n")
 
     # -----------------------------
-    # GROUP BY LEMMAS
+    # LEMMATIZATION (batch)
     # -----------------------------
+    lemmas = mystem.lemmatize(" ".join(tokens))
+
     lemma_dict = defaultdict(set)
 
-    for token in tokens_sorted:
-        lemma = mystem.lemmatize(token)[0].strip()
-        if lemma:
-            lemma_dict[lemma].add(token)
+    token_index = 0
 
+    for lemma in lemmas:
+
+        lemma = lemma.strip()
+
+        if not lemma:
+            continue
+
+        if token_index >= len(tokens):
+            break
+
+        token = tokens[token_index]
+        lemma_dict[lemma].add(token)
+
+        token_index += 1
+
+    # -----------------------------
+    # SAVE LEMMAS
+    # -----------------------------
     lemmas_path = os.path.join(output_folder, f"{filename}_lemmas.txt")
 
     with open(lemmas_path, "w", encoding="utf-8") as f:
@@ -89,12 +107,13 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
 # -----------------------------
 def main():
 
-    input_folder = "D:\OIP\OIP1-crawler-code-files\pages"      # folder with 117 txt files
+    input_folder = r"D:\OIP\OIP1-crawler-code-files\pages"
     output_folder = "output"
 
     os.makedirs(output_folder, exist_ok=True)
 
     nltk.download("stopwords", quiet=True)
+
     russian_stopwords = set(stopwords.words("russian"))
 
     mystem = Mystem()
@@ -104,9 +123,13 @@ def main():
     processed = 0
 
     for filename in files:
+
         filepath = os.path.join(input_folder, filename)
+
         print(f"Processing {filename}...")
+
         process_file(filepath, output_folder, russian_stopwords, mystem)
+
         processed += 1
 
     print("\n✅ DONE")
