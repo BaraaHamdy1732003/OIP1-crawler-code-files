@@ -3,40 +3,46 @@ import re
 from collections import defaultdict
 import nltk
 from nltk.corpus import stopwords
-from pymystem3 import Mystem
+from nltk.stem import WordNetLemmatizer
+
+
+# -----------------------------
+# DOWNLOAD NLTK DATA
+# -----------------------------
+nltk.download("stopwords")
+nltk.download("wordnet")
+nltk.download("omw-1.4")
 
 
 # -----------------------------
 # REMOVE HTML TAGS
 # -----------------------------
-def remove_html_tags(text: str) -> str:
+def remove_html_tags(text):
     return re.sub(r"<[^>]+>", " ", text)
 
 
 # -----------------------------
 # CLEAN TOKEN
 # -----------------------------
-RUS_LETTERS_RE = re.compile(r"[^а-яё]")
-
-def clean_token(token: str) -> str:
+def clean_token(token):
     token = token.lower()
-    token = RUS_LETTERS_RE.sub("", token)
+    token = re.sub(r"[^a-z]", "", token)
     return token
 
 
 # -----------------------------
 # PROCESS ONE FILE
 # -----------------------------
-def process_file(filepath: str, output_folder: str, russian_stopwords: set, mystem: Mystem):
+def process_file(filepath, output_folder, stop_words, lemmatizer):
 
     with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
         text = f.read()
 
-    # 1️⃣ remove html
+    # remove html
     text = remove_html_tags(text)
 
-    # 2️⃣ extract russian tokens
-    raw_tokens = re.findall(r"[А-Яа-яЁё]+", text)
+    # extract English tokens
+    raw_tokens = re.findall(r"[A-Za-z]+", text)
 
     tokens = []
 
@@ -46,14 +52,15 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
 
         if not cleaned:
             continue
+
         if len(cleaned) < 2:
             continue
-        if cleaned in russian_stopwords:
+
+        if cleaned in stop_words:
             continue
 
         tokens.append(cleaned)
 
-    # sort tokens alphabetically
     tokens_sorted = sorted(tokens)
 
     filename = os.path.splitext(os.path.basename(filepath))[0]
@@ -68,32 +75,16 @@ def process_file(filepath: str, output_folder: str, russian_stopwords: set, myst
             f.write(token + "\n")
 
     # -----------------------------
-    # LEMMATIZATION (batch)
+    # GROUP BY LEMMAS
     # -----------------------------
-    lemmas = mystem.lemmatize(" ".join(tokens))
-
     lemma_dict = defaultdict(set)
 
-    token_index = 0
+    for token in tokens:
 
-    for lemma in lemmas:
+        lemma = lemmatizer.lemmatize(token)
 
-        lemma = lemma.strip()
-
-        if not lemma:
-            continue
-
-        if token_index >= len(tokens):
-            break
-
-        token = tokens[token_index]
         lemma_dict[lemma].add(token)
 
-        token_index += 1
-
-    # -----------------------------
-    # SAVE LEMMAS
-    # -----------------------------
     lemmas_path = os.path.join(output_folder, f"{filename}_lemmas.txt")
 
     with open(lemmas_path, "w", encoding="utf-8") as f:
@@ -112,11 +103,9 @@ def main():
 
     os.makedirs(output_folder, exist_ok=True)
 
-    nltk.download("stopwords", quiet=True)
+    stop_words = set(stopwords.words("english"))
 
-    russian_stopwords = set(stopwords.words("russian"))
-
-    mystem = Mystem()
+    lemmatizer = WordNetLemmatizer()
 
     files = sorted([f for f in os.listdir(input_folder) if f.endswith(".txt")])
 
@@ -128,18 +117,17 @@ def main():
 
         print(f"Processing {filename}...")
 
-        process_file(filepath, output_folder, russian_stopwords, mystem)
+        process_file(filepath, output_folder, stop_words, lemmatizer)
 
         processed += 1
 
-    print("\n✅ DONE")
+    print("\nDONE")
     print(f"Processed files: {processed}")
     print(f"Generated {processed} token files")
     print(f"Generated {processed} lemma files")
 
     if processed != 117:
-        print("⚠ WARNING: Number of processed files is not 117!")
-        print("Check your input folder.")
+        print("WARNING: Expected 117 files!")
 
 
 if __name__ == "__main__":
