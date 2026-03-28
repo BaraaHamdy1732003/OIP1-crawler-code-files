@@ -1,57 +1,104 @@
-import faiss
+import os
+import re
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 
 # -----------------------------
-# 1. Sample Documents
+# LOAD DOCUMENTS
 # -----------------------------
-documents = [
-    "Machine learning is a subset of artificial intelligence.",
-    "Deep learning uses neural networks.",
-    "Python is a popular programming language.",
-    "Vector search is used in semantic search systems.",
-    "FAISS is a library for efficient similarity search."
-]
+def load_documents(folder_path):
+    documents = []
+    filenames = []
 
-# -----------------------------
-# 2. Load Embedding Model
-# -----------------------------
-model = SentenceTransformer("all-MiniLM-L6-v2")
+    files = sorted(os.listdir(folder_path), key=lambda x: int(x.split(".")[0]))
 
-# Convert documents to embeddings
-doc_embeddings = model.encode(documents)
+    for file in files:
+        if file.endswith(".txt"):
+            with open(os.path.join(folder_path, file), "r", encoding="utf-8", errors="ignore") as f:
+                text = f.read()
+                documents.append(text)
+                filenames.append(file)
 
-# Convert to numpy float32 (required by FAISS)
-doc_embeddings = np.array(doc_embeddings).astype("float32")
+    return documents, filenames
+
 
 # -----------------------------
-# 3. Build FAISS Index
+# LOAD INDEX FILE (doc_id → URL)
 # -----------------------------
-dimension = doc_embeddings.shape[1]
-index = faiss.IndexFlatL2(dimension)  # L2 distance
-index.add(doc_embeddings)
+def load_index(index_path):
+    index = {}
 
-print(f"Indexed {index.ntotal} documents.")
+    with open(index_path, "r", encoding="utf-8") as f:
+        for line in f:
+            parts = line.strip().split(maxsplit=1)
+            if len(parts) == 2:
+                doc_id, url = parts
+                index[int(doc_id)] = url
 
-# -----------------------------
-# 4. Search Function
-# -----------------------------
-def search(query, top_k=3):
-    query_vector = model.encode([query])
-    query_vector = np.array(query_vector).astype("float32")
+    return index
 
-    distances, indices = index.search(query_vector, top_k)
-
-    print("\nQuery:", query)
-    print("\nTop results:\n")
-
-    for i, idx in enumerate(indices[0]):
-        print(f"Rank {i+1}:")
-        print(f"Document: {documents[idx]}")
-        print(f"Distance: {distances[0][i]}")
-        print("-" * 40)
 
 # -----------------------------
-# 5. Example Query
+# SEARCH FUNCTION
 # -----------------------------
-search("What is artificial intelligence?")
+def search(query, vectorizer, doc_vectors, filenames, index, top_k=5):
+    query_vec = vectorizer.transform([query])
+
+    # cosine similarity
+    similarities = (doc_vectors * query_vec.T).toarray().flatten()
+
+    top_indices = np.argsort(similarities)[::-1][:top_k]
+
+    results = []
+
+    for i in top_indices:
+        doc_name = filenames[i]
+        doc_id = int(doc_name.split(".")[0])
+        url = index.get(doc_id, "No URL")
+
+        results.append((doc_name, url, similarities[i]))
+
+    return results
+
+
+# -----------------------------
+# MAIN
+# -----------------------------
+def main():
+    documents_folder = r"D:\OIP\OIP1-crawler-code-files\pages"
+    index_file = r"D:\OIP\OIP1-crawler-code-files\index.txt"
+
+    print("Loading documents...")
+    documents, filenames = load_documents(documents_folder)
+
+    print("Loading index...")
+    index = load_index(index_file)
+
+    print("Building TF-IDF vectors...")
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        max_features=5000
+    )
+
+    doc_vectors = vectorizer.fit_transform(documents)
+
+    print("\n✅ Search Engine Ready!\n")
+
+    while True:
+        query = input("Enter your search query (or 'exit'): ")
+
+        if query.lower() == "exit":
+            break
+
+        results = search(query, vectorizer, doc_vectors, filenames, index)
+
+        print("\nTop results:")
+        for doc, url, score in results:
+            print(f"{doc} | {url} | score={score:.4f}")
+
+        print("\n" + "-" * 50)
+
+
+if __name__ == "__main__":
+    main()

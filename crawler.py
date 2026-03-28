@@ -24,7 +24,7 @@ def is_noise(token: str) -> bool:
 
 
 def main():
-    input_folder = "/Users/yourname/project/task01/saved_pages"
+    input_folder = "input_texts"
     output_folder = "output"
 
     os.makedirs(output_folder, exist_ok=True)
